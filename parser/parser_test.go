@@ -341,3 +341,42 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		}
 	}
 }
+
+func TestSinglePlus(t *testing.T) {
+	test := "11 + 22"
+	ret := "(11 + 22)"
+	l := lexer.New(test)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	actual := program.String()
+	if actual != ret {
+		t.Errorf("expected=%s, got=%s", ret, actual)
+	}
+}
+
+func TestDoublePlus(t *testing.T) {
+	test := "11 + 22 + 33"
+	ret := "((11 + 22) + 33)"
+	l := lexer.New(test)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	actual := program.String()
+	if actual != ret {
+		t.Errorf("expected=%s, got=%s", ret, actual)
+	}
+}
+
+func TestPlusMultiply(t *testing.T) {
+	test := "11 + 22 * 33"
+	ret := "(11 + (22 * 33))"
+	l := lexer.New(test)
+	p := New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	actual := program.String()
+	if actual != ret {
+		t.Errorf("expected=%s, got=%s", ret, actual)
+	}
+}
